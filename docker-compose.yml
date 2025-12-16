@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  marimo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: marimo-editor
+    ports:
+      - "2718:2718"  # Marimo default port
+    volumes:
+      # Mount current directory for notebook persistence
+      - ./notebooks:/app/notebooks
+      # Mount docs for reference
+      - ./docs:/app/docs
+      # Optional: mount data directory if you have datasets
+      - ./data:/app/data:ro
+    environment:
+      - MARIMO_HOST=0.0.0.0
+      - MARIMO_PORT=2718
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    networks:
+      - marimo-network
+
+  # Optional: Marimo app runner service
+  marimo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: marimo-app-runner
+    ports:
+      - "2719:2718"  # Different port for app runner
+    volumes:
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data:ro
+    environment:
+      - MARIMO_HOST=0.0.0.0
+      - MARIMO_PORT=2718
+    command: ["marimo", "run", "--host", "0.0.0.0", "--port", "2718", "notebooks"]
+    restart: unless-stopped
+    profiles:
+      - app  # Only start with --profile app
+    networks:
+      - marimo-network
+    depends_on:
+      - marimo
+
+networks:
+  marimo-network:
+    driver: bridge
+

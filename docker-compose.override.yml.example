@@ -1,0 +1,32 @@
+# Example docker-compose.override.yml
+# Copy this file to docker-compose.override.yml to customize settings
+# This file is automatically loaded by docker-compose
+
+version: '3.8'
+
+services:
+  marimo:
+    # Override port if needed
+    ports:
+      - "8080:2718"  # Change 8080 to your preferred port
+    
+    # Add environment variables
+    environment:
+      - MARIMO_HOST=0.0.0.0
+      - MARIMO_PORT=2718
+      - PYTHONPATH=/app
+    
+    # Add additional volumes
+    volumes:
+      - ./custom:/app/custom
+    
+    # Resource limits (optional)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
