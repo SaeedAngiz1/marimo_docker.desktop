@@ -91,9 +91,7 @@ docker-compose up
 # Access Marimo at http://localhost:2718
 ```
 
-> **Note:** If Docker asks for a password, enter your **Windows user account password**. This is a one-time setup. See [AUTHENTICATION_GUIDE.md](AUTHENTICATION_GUIDE.md) for details.
 
-📖 **[Full Docker Guide →](DOCKER.md)** | 🔐 **[Authentication Help →](AUTHENTICATION_GUIDE.md)**
 
 ### Option 2: Local Installation
 
@@ -366,4 +364,5 @@ This documentation project is licensed under the MIT License. Marimo itself is l
 [⬆ Back to Top](#-marimo-comprehensive-guide--documentation)
 
 </div>
+
 
