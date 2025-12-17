@@ -1,0 +1,50 @@
+# Marimo Configuration File
+# This file configures Marimo settings including AI model providers
+
+# AI Model Configuration
+# Configure which models to use for different AI features
+[ai.models]
+# Chat model for AI chat interface (glm-4.6:cloud - cloud-based model)
+chat_model = "ollama/glm-4.6:cloud"
+
+# Code editing model (llama3.2 - optimized for coding, ~2GB, max 4GB VRAM)
+edit_model = "ollama/llama3.2:latest"
+
+# Autocomplete model (llama3.2 - optimized for coding)
+autocomplete_model = "ollama/llama3.2:latest"
+
+# Ollama Configuration
+# Configure Ollama connection (when using local models)
+[ai.ollama]
+# Base URL for Ollama API
+# In Docker, use: http://ollama:11434/v1
+# For local Ollama: http://localhost:11434/v1
+base_url = "http://ollama:11434/v1"
+
+# OpenAI Configuration (optional - if you want to use OpenAI instead)
+# [ai.openai]
+# api_key = "your-api-key-here"
+# base_url = "https://api.openai.com/v1"
+
+# Anthropic Configuration (optional - if you want to use Claude)
+# [ai.anthropic]
+# api_key = "your-api-key-here"
+# base_url = "https://api.anthropic.com/v1"
+
+# Editor Settings
+[editor]
+# Enable/disable features
+# autocomplete = true
+# code_formatting = true
+
+# Notebook Settings
+[notebook]
+# Default notebook directory
+# directory = "notebooks"
+
+# Server Settings
+[server]
+# Host and port (usually set via environment variables)
+# host = "0.0.0.0"
+# port = 2718
+

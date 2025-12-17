@@ -14,34 +14,34 @@ This notebook shows:
 
 import marimo
 
-__generated_with = "0.1.0"
+__generated_with = "0.18.4"
 app = marimo.App()
 
-# Cell 1: Import libraries
+
 @app.cell
-def __():
+def _():
     import pandas as pd
     import numpy as np
     import matplotlib.pyplot as plt
-    return pd, np, plt
+    return np, pd, plt
 
-# Cell 2: Create sample data
+
 @app.cell
-def __(np):
+def _(np):
     # Generate sample data
     data = np.random.randn(100)
-    return data,
+    return (data,)
 
-# Cell 3: Display data statistics
+
 @app.cell
-def __(data, pd):
+def _(data, pd):
     df = pd.DataFrame({'values': data})
     stats = df.describe()
-    return df, stats
+    return
 
-# Cell 4: Visualize data
+
 @app.cell
-def __(data, plt):
+def _(data, plt):
     plt.figure(figsize=(10, 6))
     plt.hist(data, bins=20, edgecolor='black')
     plt.title('Sample Data Distribution')
@@ -51,28 +51,34 @@ def __(data, plt):
     plt.show()
     return
 
-# Cell 5: Interactive slider example
-@app.cell
-def __(marimo):
-    slider = marimo.ui.slider(1, 100, value=50, label="Sample Size")
-    return slider,
 
-# Cell 6: Use slider value reactively
 @app.cell
-def __(np, slider):
+def _(marimo):
+    slider = marimo.ui.slider(1, 100, value=50, label="Sample Size")
+    return (slider,)
+
+
+@app.cell
+def _(np, slider):
     # This cell automatically updates when slider changes
     sample_size = slider.value
     new_data = np.random.randn(sample_size)
     mean_value = new_data.mean()
-    return mean_value, new_data, sample_size
+    return mean_value, sample_size
 
-# Cell 7: Display results
+
 @app.cell
-def __(mean_value, sample_size):
+def _(mean_value, sample_size):
     print(f"Sample size: {sample_size}")
     print(f"Mean value: {mean_value:.4f}")
     return
 
+
+@app.cell
+def _():
+    print('Hi Saeed')
+    return
+
+
 if __name__ == "__main__":
     app.run()
-

@@ -1,0 +1,73 @@
+# Marimo with recommended features
+marimo[recommended]
+
+# Core Data Science
+numpy>=2.0.0
+pandas>=2.0.0
+scipy>=1.10.0
+scikit-learn>=1.3.0
+
+# Machine Learning Frameworks
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+tensorflow>=2.15.0
+
+# Deep Learning Utilities
+transformers>=4.30.0
+datasets>=2.0.0
+accelerate>=0.20.0
+
+# Plotting and Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.14.0
+bokeh>=3.0.0
+altair>=5.0.0
+
+# Data Processing
+polars>=1.0.0
+pyarrow>=10.0.0
+openpyxl>=3.1.0
+xlsxwriter>=3.1.0
+
+# Development Tools
+uv>=0.1.0
+jupyter>=1.0.0
+ipython>=8.0.0
+streamlit>=1.28.0
+
+# Web Frameworks
+fastapi>=0.100.0
+uvicorn>=0.22.0
+
+# Database Connectors
+sqlalchemy>=2.0.0
+pymongo>=4.0.0
+psycopg2-binary>=2.9.0
+
+# HTTP Clients
+requests>=2.28.0
+httpx>=0.24.0
+
+# Utilities
+tqdm>=4.65.0
+python-dotenv>=1.0.0
+pyyaml>=6.0
+
+# Image Processing
+pillow>=10.0.0
+opencv-python-headless>=4.8.0
+
+# Statistical Analysis
+statsmodels>=0.14.0
+prophet>=1.1.0
+
+# Natural Language Processing
+nltk>=3.8.0
+spacy>=3.7.0
+
+# API Clients
+openai>=1.0.0
+anthropic>=0.7.0
+

@@ -1,28 +1,84 @@
-version: '3.8'
-
 services:
+  # Ollama service for local LLM models
+  ollama:
+    image: ollama/ollama:latest
+    container_name: marimo-ollama
+    ports:
+      - "11435:11434"  # Ollama API port (external:internal) - changed to avoid conflicts
+    volumes:
+      # Persist Ollama models and data
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - marimo-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
   marimo:
     build:
       context: .
       dockerfile: Dockerfile
+      # Use build cache for faster rebuilds
+      cache_from:
+        - marimo-editor:latest
     container_name: marimo-editor
     ports:
       - "2718:2718"  # Marimo default port
     volumes:
-      # Mount current directory for notebook persistence
+      # Mount notebooks directory - ALL YOUR WORK IS SAVED HERE!
+      # This persists even after shutting down your PC
       - ./notebooks:/app/notebooks
       # Mount docs for reference
       - ./docs:/app/docs
       # Optional: mount data directory if you have datasets
       - ./data:/app/data:ro
+      # Marimo configuration and workspace data (persists settings, state, etc.)
+      # CRITICAL: This ensures all Marimo data persists across restarts
+      - ./marimo-data:/home/marimo/.marimo:rw
+      # Mount marimo.toml configuration file
+      - ./marimo.toml:/app/marimo.toml:ro
+      # Cache directory for faster startup (persists package cache)
+      - marimo-cache:/home/marimo/.cache
     environment:
       - MARIMO_HOST=0.0.0.0
       - MARIMO_PORT=2718
+      # Ollama configuration for Marimo AI features
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+      - OLLAMA_BASE_URL=http://ollama:11434/v1
+      # Force Marimo to use Ollama
+      - MARIMO_AI_PROVIDER=ollama
+      - MARIMO_AI_BASE_URL=http://ollama:11434/v1
+      # Python optimizations
+      - PYTHONOPTIMIZE=1
+      - PYTHONUNBUFFERED=1
     restart: unless-stopped
     stdin_open: true
     tty: true
     networks:
       - marimo-network
+    depends_on:
+      ollama:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2718/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Resource limits (optional, uncomment if needed)
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '2'
+    #       memory: 2G
+    #     reservations:
+    #       cpus: '0.5'
+    #       memory: 512M
 
   # Optional: Marimo app runner service
   marimo-app:
@@ -38,6 +94,10 @@ services:
     environment:
       - MARIMO_HOST=0.0.0.0
       - MARIMO_PORT=2718
+      # Ollama configuration
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+      - OLLAMA_BASE_URL=http://ollama:11434/v1
     command: ["marimo", "run", "--host", "0.0.0.0", "--port", "2718", "notebooks"]
     restart: unless-stopped
     profiles:
@@ -45,9 +105,18 @@ services:
     networks:
       - marimo-network
     depends_on:
-      - marimo
+      marimo:
+        condition: service_started
+      ollama:
+        condition: service_healthy
 
 networks:
   marimo-network:
     driver: bridge
+
+volumes:
+  ollama-data:
+    driver: local
+  marimo-cache:
+    driver: local
 
