@@ -99,13 +99,26 @@ RUN pip install --no-cache-dir \
 # Create a non-root user for security (before copying files)
 RUN useradd -m -u 1000 -s /bin/bash marimo && \
     mkdir -p /app && \
-    chown -R marimo:marimo /app
+    mkdir -p /home/marimo/.cache/uv && \
+    mkdir -p /home/marimo/.cache/pip && \
+    mkdir -p /home/marimo/.local && \
+    chown -R marimo:marimo /app && \
+    chown -R marimo:marimo /home/marimo
 
 # Copy project files (after user creation for better caching)
 COPY --chown=marimo:marimo . /app
 
+# Copy entrypoint script
+COPY --chown=marimo:marimo entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Switch to non-root user
 USER marimo
+
+# Set environment variables for cache locations
+ENV UV_CACHE_DIR=/home/marimo/.cache/uv \
+    PIP_CACHE_DIR=/home/marimo/.cache/pip \
+    HOME=/home/marimo
 
 # Expose Marimo default port
 EXPOSE 2718
@@ -113,6 +126,9 @@ EXPOSE 2718
 # Health check with better error handling
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:2718/api/status || exit 1
+
+# Use entrypoint to fix permissions on startup
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Default command: run Marimo editor with optimized settings
 CMD ["marimo", "edit", "--host", "0.0.0.0", "--port", "2718"]

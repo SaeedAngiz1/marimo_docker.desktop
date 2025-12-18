@@ -41,8 +41,7 @@ services:
       - ./marimo-data:/home/marimo/.marimo:rw
       # Mount marimo.toml configuration file
       - ./marimo.toml:/app/marimo.toml:ro
-      # Cache directory for faster startup (persists package cache)
-      - marimo-cache:/home/marimo/.cache
+      # Note: Cache is stored in container (no volume needed - cache can be rebuilt)
     environment:
       - MARIMO_HOST=0.0.0.0
       - MARIMO_PORT=2718
@@ -56,6 +55,12 @@ services:
       # Python optimizations
       - PYTHONOPTIMIZE=1
       - PYTHONUNBUFFERED=1
+      # Cache directories
+      - UV_CACHE_DIR=/home/marimo/.cache/uv
+      - PIP_CACHE_DIR=/home/marimo/.cache/pip
+      # Ensure internet access (Docker has internet by default, but explicit DNS)
+      - DNS=8.8.8.8
+      - DNS=8.8.4.4
     restart: unless-stopped
     stdin_open: true
     tty: true
@@ -116,7 +121,5 @@ networks:
 
 volumes:
   ollama-data:
-    driver: local
-  marimo-cache:
     driver: local
 
